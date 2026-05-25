@@ -1,28 +1,32 @@
 #include <dynamic_array.h>
 #include <stdio.h>
 
+#define Assert(x, y, msg) do{\
+    if((x) != (y)){\
+        fprintf(stderr, "Fail at : %s\n", (msg));\
+        exit(1);\
+    }\
+    printf("Success : %s\n", (msg));\
+}while(0)
+
 int main(){
-   int* darr = daInit();
+   int* darr = NULL;
 
    for(int i=0; i<20; i++){
-       daPush(&darr, i);
+       da_push(darr, i+1);
    }
-   for(int i=0; i<daLen(darr); i++){
-       printf("%d,", darr[i]);
+   Assert(da_len(darr), 20, "Push test");
+   for(int i=20; i>15; i--){
+       int *pop;
+       da_pop(darr, pop);
+       Assert(*pop, i, "Pop test");
    }
-   printf("len : %td\n", daLen(darr));
-   size_t half_len = daLen(darr)/2;
-   for(int i=0; i < half_len; i++){
-       int p = daPop(darr);
-       printf("poppin : %d, i : %d \n", p, i);
-   }
-   printf("len : %td\n", daLen(darr));
+   Assert(da_len(darr), 15, "Pop test length result");
    for(int i=30; i <40; i++){
-       daPush(&darr, i);
+       da_push(darr, i);
    }
-   for(int i=0; i<daLen(darr); i++){
-       printf("%d,", darr[i]);
-   }
-   printf("\n");
-   printf("final length : %td", daLen(darr));
+   Assert(darr[da_len(darr)-1], 39, "Final push length last element");
+   Assert(da_len(darr), 25, "Final push length result");
+   da_free(darr);
+   Assert(darr, NULL, "after da_free call should be null");
 }
