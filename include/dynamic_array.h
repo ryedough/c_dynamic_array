@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#define INIT_CAP 2
+#define INIT_CAP 8
 
 typedef struct {
     size_t capacity;
@@ -26,6 +26,17 @@ typedef struct {
     h->length -=1;               \
     res=&(arr)[h->length];       \
 }while(0)
+
+#define da_create(arr, values, n, cap) do{\
+    unsigned int capacity = (cap) > (n) ? (cap) : (n);\
+    Header *h = malloc(sizeof(Header) + (capacity * sizeof(typeof(*(values)))));\
+    h->capacity = capacity;\
+    h->length = (n);\
+    (arr) = (typeof(arr))(h+1);\
+    for(unsigned int i=0; i<(n); i++){\
+        (arr)[i] = (values)[i];\
+    }\
+} while(0)
 
 #define da_push(arr, value) do{                                                  \
     if(!arr){                                                                    \
