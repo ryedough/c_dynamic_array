@@ -11,11 +11,12 @@ typedef struct {
 } Header;
 
 #define da_free(arr) do{    \
+    if(!(arr)) break;       \
     free((Header*)(arr)-1); \
     (arr)=NULL;             \
 } while(0)
 
-#define da_len(arr) ((Header*)(arr)-1)->length
+#define da_len(arr) ((arr) ? ((Header*)(arr)-1)->length : 0)
 
 #define da_pop(arr, res) do{     \
     Header* h = (Header*)(arr)-1;\
@@ -48,7 +49,7 @@ typedef struct {
     Header *h = (Header *)(arr)-1;                                               \
     if(h->capacity < h->length + 1) {                                            \
         size_t new_cap = h->capacity * 2;                                        \
-        Header *new_h = realloc(h, sizeof(*h) + (sizeof(*(arr)) * new_cap));     \
+        Header *new_h = realloc(h, sizeof(*h) + (sizeof(value) * new_cap));     \
         if(!new_h){                                                              \
             fprintf(stderr,"%s","cant reallocate array\n");                      \
             exit(1);                                                             \
